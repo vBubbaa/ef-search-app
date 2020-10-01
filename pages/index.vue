@@ -11,11 +11,13 @@
         </div>
         <!-- Call to action (search page) -->
         <div class="text-white font-semibold text-xl p-2">
-          <button
-            class="bg-green-400 text-black rounded-full py-2 px-4 hover:bg-green-500 focus:outline-none"
-          >
-            Search
-          </button>
+          <nuxt-link :to="{ name: 'search' }">
+            <button
+              class="bg-green-400 text-black rounded-full py-2 px-4 hover:bg-green-500 focus:outline-none"
+            >
+              Search
+            </button>
+          </nuxt-link>
         </div>
       </div>
     </div>
@@ -34,24 +36,23 @@
 import AboutProject from "../components/ui/AboutProject";
 export default {
   components: {
-    AboutProject,
+    AboutProject
   },
-  data: function () {
+  data: function() {
     return {
       AboutItems: [
         {
           title: "Search",
-          text: "Search Everything Food's extensive food options.",
+          text: "Search Everything Food's extensive food options."
         },
         {
           title: "Filter",
-          text: "Filter your search results",
-        },
-      ],
+          text: "Filter your search results"
+        }
+      ]
     };
-  },
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

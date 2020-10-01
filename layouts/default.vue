@@ -5,18 +5,18 @@
       class="flex items-center justify-between flex-wrap bg-white p-6 border-b-4 border-green-400"
     >
       <div class="flex items-center flex-shrink-0 text-white mr-6">
-        <a
-          href="#"
+        <nuxt-link
+          :to="{ name: 'index' }"
           class="font-semibold text-xl tracking-tight text-black hover:text-green-400"
-          >Everything Food</a
+          >Everything Food</nuxt-link
         >
       </div>
       <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
         <div>
-          <a
-            href="#"
+          <nuxt-link
+            :to="{ name: 'search' }"
             class="inline-block text-sm px-4 py-2 leading-none text-black hover:text-green-400 mt-4 lg:mt-0"
-            >Search</a
+            >Search</nuxt-link
           >
         </div>
       </div>
