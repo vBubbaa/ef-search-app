@@ -26,6 +26,11 @@
 </template>
 
 <script>
+/**
+ * Index landing page
+ * Includes a header with a call to action
+ * Includes a small about section for the project
+ */
 import AboutProject from "../components/ui/AboutProject";
 export default {
   components: {
