@@ -1,23 +1,33 @@
 <template>
-  <div class="h-full">
+  <div class="w-full h-full flex flex-col min-h-screen">
     <!-- Navbar -->
-    <div class="bg-white w-full h-16 border-b-4 border-green-400">
-      <div class="container p-4 h-full flex justify-between">
-        <a href="" class="text-black hover:text-green-400 my-auto font-semibold"
+    <nav
+      class="flex items-center justify-between flex-wrap bg-white p-6 border-b-4 border-green-400"
+    >
+      <div class="flex items-center flex-shrink-0 text-white mr-6">
+        <a
+          href="#"
+          class="font-semibold text-xl tracking-tight text-black hover:text-green-400"
           >Everything Food</a
         >
-        <a href="" class="text-black hover:text-green-400 my-auto font-semibold"
-          >Search</a
-        >
       </div>
-    </div>
+      <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+        <div>
+          <a
+            href="#"
+            class="inline-block text-sm px-4 py-2 leading-none text-black hover:text-green-400 mt-4 lg:mt-0"
+            >Search</a
+          >
+        </div>
+      </div>
+    </nav>
     <!-- Main Content (Nuxt Pages) -->
-    <div class="bg-white w-full h-full">
+    <div class="bg-white flex-1 mx-auto w-full">
       <Nuxt />
     </div>
     <!-- Footer -->
     <div
-      class="w-full border-t-4 border-green-400 flex justify-around p-4 flex-col sm:flex-row"
+      class="w-full border-t-4 border-green-400 flex justify-around p-4 flex-col sm:flex-row pin-b"
     >
       <!-- Contact Info. -->
       <div class="flex flex-col text-center py-2">
