@@ -29,7 +29,7 @@ export default {
 
   // Set the axios base-url so we don't have to type it out every time.
   axios: {
-    BaseURL: "https://prod.everythingfood-api.com/api/v1/search/food_items"
+    baseURL: "https://prod.everythingfood-api.com/api/v1/search/food_items"
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
