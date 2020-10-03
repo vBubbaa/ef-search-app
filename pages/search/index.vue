@@ -43,11 +43,13 @@
         <!-- If we have food results from the api give the option to filter/sort -->
         <div v-if="food != null" class="w-full">
           <div class="inline-flex flex flex-col w-full">
+            <!-- Input selection for selecting type of filter -->
             <InputSelection
               :title="'Select a filter'"
               :options="filterOptions.filters"
               @selected="selectFilter"
             />
+            <!-- Input selection for selecting the built filter options -->
             <InputSelection
               v-if="filterOptions.selectedFilter != null"
               :title="filterOptions.selectFilter"
@@ -64,39 +66,26 @@
               :key="k"
             />
           </div>
-
-          <!-- <div class="inline-block relative w-64">
-            ABBB Score
-            <button @click="sort()">Sort</button>
-          </div> -->
-          <!-- If filtering has happened, our filteredFood list will not be empty, so we show the filtered food items -->
-          <div v-if="this.filteredFood != null">
-            <div
-              v-for="(item, key) in filteredFood"
-              :key="key"
-              class="text-black border-2 border-green-400"
-            >
-              {{ item.Desc1 }}
-              <br />
-              {{ item.Brand.Desc1 }}
-              <br />
-              {{ item.ABBScore }}
-              <br />
+          <div v-if="this.filteredFood != null" class="mb-4 w-full">
+            <div class="flex flex-wrap justify-between overflow-hidden">
+              <!-- Iterate filtered food and show food item card for each filtered food -->
+              <FoodItemCard
+                v-for="(item, key) in filteredFood"
+                :key="key"
+                :fooditem="item"
+              />
             </div>
           </div>
           <!-- Filtering has NOT happened, so we show the original list of food items from the API response -->
-          <div
-            v-else
-            v-for="(item, key) in food.SearchResults"
-            :key="key"
-            class="text-black border-2 border-green-400"
-          >
-            {{ item.Desc1 }}
-            <br />
-            {{ item.Brand.Desc1 }}
-            <br />
-            {{ item.ABBScore }}
-            <br />
+          <div v-else class="mb-4 w-full">
+            <div class="flex flex-wrap justify-between overflow-hidden">
+              <!-- Iterate base food (inital unfiltered API res data) -->
+              <FoodItemCard
+                v-for="(item, key) in food.SearchResults"
+                :key="key"
+                :fooditem="item"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -112,12 +101,14 @@
  */
 import InputSelection from "../../components/functional/InputSelection";
 import Sort from "../../components/functional/Sort";
+import FoodItemCard from "../../components/ui/FoodItemCard";
 
 export default {
   name: "search-index",
   components: {
     InputSelection,
     Sort,
+    FoodItemCard,
   },
   data() {
     return {
