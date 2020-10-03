@@ -39,66 +39,64 @@
         Loading Food
       </div>
       <!-- Done Loading -->
-      <div v-else class="py-2">
+      <div v-else class="py-2 w-full">
         <!-- If we have food results from the api give the option to filter/sort -->
-        <div v-if="food != null">
-          <div class="inline-block relative w-64">
-            <!-- Selection list for selecting brands to filter by -->
-            <select
-              class="block appearance-none w-full bg-white border border-green-400 hover:border-green-500 px-4 py-2 pr-8 my-4 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-              v-model="filterOptions.brandSelection"
-              @change="filterByBrand($event)"
-            >
-              Filter by Brand
-              <!-- Options placeholder that is hidden -->
-              <option :value="null" disabled hidden>Brands</option>
-              <!-- Will return an original list of the food (no filters) -->
-              <option value="None">None</option>
-              <!-- Iterate through calculated UNIQUE brands from a list of food -->
-              <option
-                v-for="(brand, key) in filterOptions.brandsAvailable"
-                :key="key"
-                :value="brand"
-              >
-                {{ brand }}
-              </option>
-            </select>
-            <div
-              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
-            >
-              <svg
-                class="fill-current h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                />
-              </svg>
-            </div>
+        <div v-if="food != null" class="w-full">
+          <div class="inline-flex flex flex-col w-full">
+            <InputSelection
+              :title="'Select a filter'"
+              :options="filterOptions.filters"
+              @selected="selectFilter"
+            />
+            <InputSelection
+              v-if="filterOptions.selectedFilter != null"
+              :title="filterOptions.selectFilter"
+              :options="filterOptions.builtFilters"
+              @selected="filterFood"
+            />
           </div>
+          <!-- Sorting section -->
+          <div class="inline-flex flex flex-row justify-around w-full pb-4">
+            <Sort
+              @sort="handleSort"
+              :title="s"
+              v-for="(s, k) in sortOptions.sorts"
+              :key="k"
+            />
+          </div>
+
+          <!-- <div class="inline-block relative w-64">
+            ABBB Score
+            <button @click="sort()">Sort</button>
+          </div> -->
           <!-- If filtering has happened, our filteredFood list will not be empty, so we show the filtered food items -->
           <div v-if="this.filteredFood != null">
             <div
-              v-for="item in filteredFood"
-              :key="item.DefaultVendorID"
+              v-for="(item, key) in filteredFood"
+              :key="key"
               class="text-black border-2 border-green-400"
             >
               {{ item.Desc1 }}
               <br />
               {{ item.Brand.Desc1 }}
+              <br />
+              {{ item.ABBScore }}
+              <br />
             </div>
           </div>
           <!-- Filtering has NOT happened, so we show the original list of food items from the API response -->
           <div
             v-else
-            v-for="item in food.SearchResults"
-            :key="item.DefaultVendorID"
+            v-for="(item, key) in food.SearchResults"
+            :key="key"
             class="text-black border-2 border-green-400"
           >
             {{ item.Desc1 }}
             <br />
             {{ item.Brand.Desc1 }}
+            <br />
+            {{ item.ABBScore }}
+            <br />
           </div>
         </div>
       </div>
@@ -112,8 +110,15 @@
  * Includes API search
  * Includes Brand filters given a food search response
  */
+import InputSelection from "../../components/functional/InputSelection";
+import Sort from "../../components/functional/Sort";
+
 export default {
   name: "search-index",
+  components: {
+    InputSelection,
+    Sort,
+  },
   data() {
     return {
       // Set of food reuturned from API response
@@ -126,10 +131,19 @@ export default {
       loading: false,
       // Variables we will use for filtering
       filterOptions: {
-        // Tracks a brand that is selected from our brand <select>
-        brandSelection: null,
-        // This will be filled with a UNIQUE list of brands (We have to remove deplicates)
-        brandsAvailable: ["None"],
+        // Available Filters
+        filters: ["Brands", "Package Size"],
+        // The selected filter in string format
+        selectedFilter: null,
+        // Generated filter options based on filter selected
+        builtFilters: ["None"],
+      },
+      // Options for sorting
+      sortOptions: {
+        // Available sorting methods
+        sorts: ["ABBScore", "Alphabetical"],
+        // Default sort by descending
+        descending: true,
       },
     };
   },
@@ -139,50 +153,108 @@ export default {
      * Search 'q' is tied to data 'search'
      */
     fetchFood() {
+      this.clearFilters();
       this.loading = true;
       this.food = this.$axios
         .get("", {
           params: { q: this.search },
         })
         .then((res) => {
-          console.log(res);
           this.food = res.data;
-          this.buildBrands();
           this.loading = false;
         })
         .catch((err) => {
           console.log(err);
         });
     },
-
     /**
-     * buildBrands() iterates the food list, and builds a list of brands we will filter by
-     * We have to seperately build this list so that we can remove duplicate values
-     * Many search results have the same brands*
-     * We store each brand to a list, then create a new set which creates a unique list of brands
+     * Catches a sort emitted event, and sorts accordingly
+     * Available sorts are "ABBScore" and "Alphabetical"
      */
-    buildBrands() {
-      let tempBrands = [];
-      this.food.SearchResults.forEach(function (foodItem) {
-        console.log(foodItem.Brand.Desc1);
-        tempBrands.push(foodItem.Brand.Desc1);
-      });
-      this.filterOptions.brandsAvailable = new Set(tempBrands);
-    },
-
-    /**
-     * Recieves our option selection for our brand list dropdown
-     * Returns a copy of food 'filteredFood' that consists of whichever brand is selected
-     * If the option 'none' is selected, we set the filteredFood list to the original food list (no filtering)
-     */
-    filterByBrand(brandselection) {
-      if (brandselection.target.value !== "None") {
-        this.filteredFood = this.food.SearchResults.filter(
-          (foodItem) => foodItem.Brand.Desc1 === brandselection.target.value
-        );
-      } else {
-        this.filteredFood = this.food.SearchResults;
+    handleSort(sortType) {
+      if (sortType == "ABBScore") {
+        // Filter by ABBScore desc/asc
+        this.sortOptions.descending = !this.sortOptions.descending;
+        this.filteredFood = this.food.SearchResults.sort((a, b) => {
+          if (this.sortOptions.descending) {
+            return a.ABBScore > b.ABBScore ? -1 : 1;
+          } else {
+            return a.ABBScore < b.ABBScore ? -1 : 1;
+          }
+        });
+      } else if (sortType == "Alphabetical") {
+        this.sortOptions.descending = !this.sortOptions.descending;
+        this.filteredFood = this.food.SearchResults.sort((a, b) => {
+          if (this.sortOptions.descending) {
+            return a.Desc1 > b.Desc1 ? -1 : 1;
+          } else {
+            return a.Desc1 < b.Desc1 ? -1 : 1;
+          }
+        });
       }
+    },
+    // Grabs the selected filter to filter by from <InputSelection />
+    selectFilter(selection) {
+      this.clearFilters();
+      this.filterOptions.selectedFilter = selection;
+      this.buildFilterOptions(selection);
+    },
+    /**
+     * Grabs the selected filter and generates the selection options to choose from
+     * We store all options to an array, then cast it to a set removing non-unique values
+     * We then convert it back to an array
+     */
+    buildFilterOptions(filter) {
+      if (filter == "Brands") {
+        let tempBrands = [];
+        this.food.SearchResults.forEach(function (foodItem) {
+          tempBrands.push(foodItem.Brand.Desc1);
+        });
+        let uniqueSet = new Set(tempBrands);
+        this.filterOptions.builtFilters = [...uniqueSet];
+      } else if (filter == "Package Size") {
+        let tempSizes = [];
+        this.food.SearchResults.forEach(function (foodItem) {
+          if (foodItem.PackagingSize != null) {
+            tempSizes.push(foodItem.PackagingSize);
+          }
+        });
+        let uniqueSet = new Set(tempSizes);
+        this.filterOptions.builtFilters = [...uniqueSet];
+      }
+    },
+    /**
+     * Grabs whichever filter options is selected
+     * Checks to see which filter is selected
+     * Sets the food to a filtered list of food items
+     */
+    filterFood(selection) {
+      if (this.filterOptions.selectedFilter == "Brands") {
+        if (selection != "None") {
+          this.filteredFood = this.food.SearchResults.filter(
+            (foodItem) => foodItem.Brand.Desc1 === selection
+          );
+        } else {
+          this.filteredFood = this.food.SearchResults;
+        }
+      } else if (this.filterOptions.selectedFilter == "Package Size") {
+        if (selection != "None") {
+          this.filteredFood = this.food.SearchResults.filter(
+            (foodItem) => foodItem.PackagingSize === selection
+          );
+        } else {
+          this.filteredFood = this.food.SearchResults;
+        }
+      }
+    },
+    /**
+     * Clear all filters
+     * Used when manually clearing, or when selecting a different filter
+     */
+    clearFilters() {
+      this.filterOptions.selectedFilter = null;
+      this.filterOptions.builtFilters = ["None"];
+      this.filteredFood = null;
     },
   },
 };
