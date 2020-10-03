@@ -12,34 +12,14 @@
         v-model="search"
       />
     </div>
+    <!-- Loading Spinner -->
+    <div v-if="loading">
+      <Loading />
+    </div>
     <!-- Results -->
-    <div class="flex justify-between">
-      <!-- Loading Spinner -->
-      <div v-if="loading" class="text-center inline-flex py-2">
-        <svg
-          class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-50"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="green"
-            stroke-width="4"
-          ></circle>
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-        Loading Food
-      </div>
+    <div v-else class="flex justify-between">
       <!-- Done Loading -->
-      <div v-else class="py-2 w-full">
+      <div class="py-2 w-full">
         <!-- If we have food results from the api give the option to filter/sort -->
         <div v-if="food != null" class="w-full">
           <div class="inline-flex flex flex-col w-full">
@@ -102,6 +82,7 @@
 import InputSelection from "../../components/functional/InputSelection";
 import Sort from "../../components/functional/Sort";
 import FoodItemCard from "../../components/ui/FoodItemCard";
+import Loading from "../../components/ui/Loading";
 
 export default {
   name: "search-index",
@@ -109,6 +90,7 @@ export default {
     InputSelection,
     Sort,
     FoodItemCard,
+    Loading,
   },
   data() {
     return {
