@@ -23,7 +23,7 @@
     <div class="pt-2">
       Package Size:
       <span v-if="fooditem.PackagingSize">{{ fooditem.PackagingSize }}</span
-      ><v-else>N/A</v-else>
+      ><span v-else>N/A</span>
     </div>
   </div>
 </template>
