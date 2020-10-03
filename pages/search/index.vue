@@ -148,22 +148,48 @@ export default {
       if (sortType == "ABBScore") {
         // Filter by ABBScore desc/asc
         this.sortOptions.descending = !this.sortOptions.descending;
-        this.filteredFood = this.food.SearchResults.sort((a, b) => {
-          if (this.sortOptions.descending) {
-            return a.ABBScore > b.ABBScore ? -1 : 1;
-          } else {
-            return a.ABBScore < b.ABBScore ? -1 : 1;
-          }
-        });
+        // Check if we are sorting the base food items, or filtered food items
+        if (this.filteredFood == null) {
+          this.filteredFood = this.food.SearchResults.sort((a, b) => {
+            if (this.sortOptions.descending) {
+              return a.ABBScore > b.ABBScore ? -1 : 1;
+            } else {
+              return a.ABBScore < b.ABBScore ? -1 : 1;
+            }
+          });
+        }
+        // Sort by filtered food (not base food response)
+        else {
+          this.filteredFood = this.filteredFood.sort((a, b) => {
+            if (this.sortOptions.descending) {
+              return a.ABBScore > b.ABBScore ? -1 : 1;
+            } else {
+              return a.ABBScore < b.ABBScore ? -1 : 1;
+            }
+          });
+        }
       } else if (sortType == "Alphabetical") {
         this.sortOptions.descending = !this.sortOptions.descending;
-        this.filteredFood = this.food.SearchResults.sort((a, b) => {
-          if (this.sortOptions.descending) {
-            return a.Desc1 > b.Desc1 ? -1 : 1;
-          } else {
-            return a.Desc1 < b.Desc1 ? -1 : 1;
-          }
-        });
+        // Check if we are sorting the base food items, or filtered food items
+        if (this.filteredFood == null) {
+          this.filteredFood = this.food.SearchResults.sort((a, b) => {
+            if (this.sortOptions.descending) {
+              return a.Desc1 > b.Desc1 ? -1 : 1;
+            } else {
+              return a.Desc1 < b.Desc1 ? -1 : 1;
+            }
+          });
+        }
+        // Sort filteredfood (not base food response)
+        else {
+          this.filteredFood = this.filteredFood.sort((a, b) => {
+            if (this.sortOptions.descending) {
+              return a.Desc1 > b.Desc1 ? -1 : 1;
+            } else {
+              return a.Desc1 < b.Desc1 ? -1 : 1;
+            }
+          });
+        }
       }
     },
     // Grabs the selected filter to filter by from <InputSelection />
