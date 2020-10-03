@@ -90,7 +90,7 @@ export default {
     InputSelection,
     Sort,
     FoodItemCard,
-    Loading,
+    Loading
   },
   data() {
     return {
@@ -109,15 +109,15 @@ export default {
         // The selected filter in string format
         selectedFilter: null,
         // Generated filter options based on filter selected
-        builtFilters: ["None"],
+        builtFilters: ["None"]
       },
       // Options for sorting
       sortOptions: {
         // Available sorting methods
         sorts: ["ABBScore", "Alphabetical"],
         // Default sort by descending
-        descending: true,
-      },
+        descending: true
+      }
     };
   },
   methods: {
@@ -130,13 +130,13 @@ export default {
       this.loading = true;
       this.food = this.$axios
         .get("", {
-          params: { q: this.search },
+          params: { q: this.search }
         })
-        .then((res) => {
+        .then(res => {
           this.food = res.data;
           this.loading = false;
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
@@ -205,20 +205,28 @@ export default {
      */
     buildFilterOptions(filter) {
       if (filter == "Brands") {
+        // Temp placeholders we will use to extract unique values
         let tempBrands = [];
-        this.food.SearchResults.forEach(function (foodItem) {
+        // Iterate food items and push each to the temp array
+        this.food.SearchResults.forEach(function(foodItem) {
           tempBrands.push(foodItem.Brand.Desc1);
         });
+        // Convert to set() and remove non-unique values
         let uniqueSet = new Set(tempBrands);
+        // Spread the set and convert it back to an array
         this.filterOptions.builtFilters = [...uniqueSet];
       } else if (filter == "Package Size") {
+        // Temp placeholders we will use to extract unique values
         let tempSizes = [];
-        this.food.SearchResults.forEach(function (foodItem) {
+        // Iterate food items and push each to the temp array
+        this.food.SearchResults.forEach(function(foodItem) {
           if (foodItem.PackagingSize != null) {
             tempSizes.push(foodItem.PackagingSize);
           }
         });
+        // Convert to set() and remove non-unique values
         let uniqueSet = new Set(tempSizes);
+        // Spread the set and convert it back to an array
         this.filterOptions.builtFilters = [...uniqueSet];
       }
     },
@@ -228,18 +236,25 @@ export default {
      * Sets the food to a filtered list of food items
      */
     filterFood(selection) {
+      // Filter by brands
       if (this.filterOptions.selectedFilter == "Brands") {
+        // Check if selection is not none first
         if (selection != "None") {
+          // Filter by selection value
           this.filteredFood = this.food.SearchResults.filter(
-            (foodItem) => foodItem.Brand.Desc1 === selection
+            foodItem => foodItem.Brand.Desc1 === selection
           );
         } else {
           this.filteredFood = this.food.SearchResults;
         }
-      } else if (this.filterOptions.selectedFilter == "Package Size") {
+      }
+      // Filter by Package Size
+      else if (this.filterOptions.selectedFilter == "Package Size") {
+        // Check if selection is not none first
         if (selection != "None") {
+          // Filter by selection value
           this.filteredFood = this.food.SearchResults.filter(
-            (foodItem) => foodItem.PackagingSize === selection
+            foodItem => foodItem.PackagingSize === selection
           );
         } else {
           this.filteredFood = this.food.SearchResults;
@@ -254,8 +269,8 @@ export default {
       this.filterOptions.selectedFilter = null;
       this.filterOptions.builtFilters = ["None"];
       this.filteredFood = null;
-    },
-  },
+    }
+  }
 };
 </script>
 
