@@ -22,11 +22,10 @@
     </div>
     <div class="py-2">
       There will be filters available to further filter the search results
-      including [Brands, Package Sizes, and Food Facts]
+      including [Brands, Package Sizes]
     </div>
     <div class="py-2">
-      There will be sorting options including [ABBScore, Price, and
-      Alphabetical]
+      There will be sorting options including [ABBScore, and Alphabetical]
     </div>
   </div>
 </template>

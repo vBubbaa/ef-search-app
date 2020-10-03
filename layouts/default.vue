@@ -90,9 +90,6 @@
           Extra
         </div>
         <div>
-          <a href="" class="hover:text-green-400">About</a>
-        </div>
-        <div>
           <a
             href="https://coolors.co/000000-ffffff-68d391"
             class="hover:text-green-400"
